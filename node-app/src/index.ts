@@ -1,4 +1,7 @@
-type Mode = 'normal' | 'hard' // ユニオン型 + リテラル型で値を強制
+// as constでliteral type wideningの動きを抑制し、 ['normal', 'hard']のタプル型にする
+const modes = ['normal', 'hard'] as const
+// タプル型からユニオン型 'normal' | 'hard' を取り出す
+type Mode = typeof modes[number]
 
 class HitAndBlow {
     private readonly answerSource = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -7,7 +10,9 @@ class HitAndBlow {
     private mode: Mode = 'normal'
 
     async setting() {
-        this.mode = await promptSelect<Mode>('モードを入力してください', ['normal', 'hard'])
+        // ['normal', 'hard']を2回書くことなく実装できる
+        // modesは配列、Modeには modes をタプル型にした後に取り出したユニオン型がそれぞれ入っている
+        this.mode = await promptSelect<Mode>('モードを入力してください', modes)
 
         const answerLength = this.getAnswerLength()
 
