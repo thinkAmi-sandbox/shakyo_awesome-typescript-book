@@ -28,9 +28,12 @@ class HitAndBlow {
         } else {
             // 正解だったら終了
             this.tryCount++
-        }
+        }   
+    }
 
-        
+    end() {
+        printLine(`正解です！\n試行回数: ${this.tryCount}回`)
+        process.exit()
     }
 
     private check(input: string[]) {
@@ -73,4 +76,6 @@ const promptInput = async(text: string)  => {
     hitAndBlow.setting()
 
     await hitAndBlow.play()
+
+    hitAndBlow.end()
 })()
