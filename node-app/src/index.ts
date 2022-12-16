@@ -17,11 +17,11 @@ type GameStore = {
 
 // abstractによる抽象クラスを用意
 // 実装を全く持たない場合は、interfaceとして代替することも可能
-abstract class Game {
-    // abstractによる抽象メソッドを用意
-    abstract setting(): Promise<void>
-    abstract play(): Promise<void>
-    abstract end(): void
+// 型エイリアスとしても実装可能
+type Game = {
+    setting(): Promise<void>
+    play(): Promise<void>
+    end(): void
 }
 
 class HitAndBlow implements Game {
