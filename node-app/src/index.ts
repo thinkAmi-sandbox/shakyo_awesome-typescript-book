@@ -3,8 +3,16 @@ const modes = ['normal', 'hard'] as const
 // タプル型からユニオン型 'normal' | 'hard' を取り出す
 type Mode = typeof modes[number]
 
-const nextActions = ['play again', 'next'] as const
+const nextActions = ['play again', 'exit'] as const
 type NextAction = typeof nextActions[number]
+
+const gameTitles = ['hit and blow', 'nothing'] as const
+type GameTitle = typeof gameTitles[number]
+
+type GameStore = {
+    'hit and blow': HitAndBlow
+    'nothing': Nothing
+}
 
 class HitAndBlow {
     private readonly answerSource = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
@@ -105,15 +113,35 @@ class HitAndBlow {
     }
 }
 
+class Nothing {
+    async setting() {
+
+    }
+
+    async play() {
+
+    }
+
+    end() {
+        printLine(`終わりです`)
+    }
+}
+
 class GameProcedure {
-    private currentGameTitle = 'hit and blow'
-    private currentGame = new HitAndBlow()
+    private currentGameTitle: GameTitle | '' = ''
+    private currentGame: HitAndBlow | Nothing | null = null
+
+    constructor(private readonly gameStore: GameStore) {}
 
     public async start() {
+        await this.select()
+
         await this.play()
     }
 
     private async play() {
+        if (!this.currentGame) throw new Error('ゲームが選択されていません')
+
         printLine(`===\n${this.currentGameTitle} を開始します\n===`)
         await this.currentGame.setting()
         await this.currentGame.play()
@@ -122,13 +150,19 @@ class GameProcedure {
         const action = await promptSelect<NextAction>('ゲームを続けますか？', nextActions)
         if (action === 'play again') {
             await this.play()
-        } else if (action == 'next') {
+        } else if (action == 'exit') {
             this.end()
         } else {
             // nextActionの追加設定に対する実装漏れをふせぐために用意
             const neverValue: never = action
             throw new Error(`${neverValue} is an invalid action.`)
         }
+    }
+
+    private async select() {
+        this.currentGameTitle = await promptSelect<GameTitle>('ゲームのタイトルを入力してください', gameTitles)
+
+        this.currentGame = this.gameStore[this.currentGameTitle]
     }
 
     private end() {
@@ -178,5 +212,8 @@ const promptSelect = async <T extends string>(text: string, values: readonly T[]
 }
 
 (async () => {
-    new GameProcedure().start()
+    new GameProcedure({
+        'hit and blow': new HitAndBlow(),
+        'nothing': new Nothing()
+    }).start()
 })()
