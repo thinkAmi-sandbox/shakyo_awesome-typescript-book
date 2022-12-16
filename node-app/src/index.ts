@@ -6,13 +6,12 @@ type Mode = typeof modes[number]
 const nextActions = ['play again', 'change game', 'exit'] as const
 type NextAction = typeof nextActions[number]
 
-// 問題点1. 'hit and blow' と 'nothing' の文字列がDRYでない
 // 問題点2. HitAndBlowとNothingというクラスが登場し、疎結合でない
 const gameTitles = ['hit and blow', 'nothing'] as const
 type GameTitle = typeof gameTitles[number]
 
 type GameStore = {
-    [key: string]: HitAndBlow | Nothing
+    [key in GameTitle]: HitAndBlow | Nothing
 }
 
 class HitAndBlow {
