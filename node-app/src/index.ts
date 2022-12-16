@@ -1,7 +1,7 @@
 class HitAndBlow {
-    answerSource = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-    answer: string[] = []  // 型が不明なため、型アノテーションが必要
-    tryCount = 0
+    private readonly answerSource = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    private answer: string[] = []  // 型が不明なため、型アノテーションが必要
+    private tryCount = 0
 
     setting() {
         const answerLength = 3
@@ -33,7 +33,7 @@ class HitAndBlow {
         
     }
 
-    check(input: string[]) {
+    private check(input: string[]) {
         let hitCount = 0
         let blowCount = 0
 
