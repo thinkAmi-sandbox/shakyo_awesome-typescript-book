@@ -3,6 +3,9 @@ const modes = ['normal', 'hard'] as const
 // タプル型からユニオン型 'normal' | 'hard' を取り出す
 type Mode = typeof modes[number]
 
+const nextActions = ['play again', 'next'] as const
+type NextAction = typeof nextActions[number]
+
 class HitAndBlow {
     private readonly answerSource = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     private answer: string[] = []  // 型が不明なため、型アノテーションが必要
@@ -51,6 +54,8 @@ class HitAndBlow {
 
     end() {
         printLine(`正解です！\n試行回数: ${this.tryCount}回`)
+
+        this.reset()
     }
 
     private check(input: string[]) {
@@ -93,6 +98,11 @@ class HitAndBlow {
                 throw new Error(`${neverValue}は無効なモードです`)
         }
     }
+
+    private reset() {
+        this.answer = []
+        this.tryCount = 0
+    }
 }
 
 class GameProcedure {
@@ -109,7 +119,16 @@ class GameProcedure {
         await this.currentGame.play()
         this.currentGame.end()
 
-        this.end()
+        const action = await promptSelect<NextAction>('ゲームを続けますか？', nextActions)
+        if (action === 'play again') {
+            await this.play()
+        } else if (action == 'next') {
+            this.end()
+        } else {
+            // nextActionの追加設定に対する実装漏れをふせぐために用意
+            const neverValue: never = action
+            throw new Error(`${neverValue} is an invalid action.`)
+        }
     }
 
     private end() {
