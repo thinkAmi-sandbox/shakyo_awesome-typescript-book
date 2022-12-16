@@ -11,10 +11,20 @@ const gameTitles = ['hit and blow', 'nothing'] as const
 type GameTitle = typeof gameTitles[number]
 
 type GameStore = {
-    [key in GameTitle]: HitAndBlow | Nothing
+    // setting()/play()/end()を持つ抽象クラスに差し替え、依存関係をなくす
+    [key in GameTitle]: Game
 }
 
-class HitAndBlow {
+// abstractによる抽象クラスを用意
+// 実装を全く持たない場合は、interfaceとして代替することも可能
+abstract class Game {
+    // abstractによる抽象メソッドを用意
+    abstract setting(): Promise<void>
+    abstract play(): Promise<void>
+    abstract end(): void
+}
+
+class HitAndBlow implements Game {
     private readonly answerSource = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     private answer: string[] = []  // 型が不明なため、型アノテーションが必要
     private tryCount = 0
@@ -113,7 +123,7 @@ class HitAndBlow {
     }
 }
 
-class Nothing {
+class Nothing implements Game {
     async setting() {
 
     }
@@ -129,7 +139,7 @@ class Nothing {
 
 class GameProcedure {
     private currentGameTitle: GameTitle | '' = ''
-    private currentGame: HitAndBlow | Nothing | null = null
+    private currentGame: Game | null = null
 
     constructor(private readonly gameStore: GameStore) {}
 
