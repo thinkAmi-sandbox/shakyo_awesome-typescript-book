@@ -3,9 +3,11 @@ const modes = ['normal', 'hard'] as const
 // タプル型からユニオン型 'normal' | 'hard' を取り出す
 type Mode = typeof modes[number]
 
-const nextActions = ['play again', 'exit'] as const
+const nextActions = ['play again', 'change game', 'exit'] as const
 type NextAction = typeof nextActions[number]
 
+// 問題点1. 'hit and blow' と 'nothing' の文字列がDRYでない
+// 問題点2. HitAndBlowとNothingというクラスが登場し、疎結合でない
 const gameTitles = ['hit and blow', 'nothing'] as const
 type GameTitle = typeof gameTitles[number]
 
@@ -150,7 +152,10 @@ class GameProcedure {
         const action = await promptSelect<NextAction>('ゲームを続けますか？', nextActions)
         if (action === 'play again') {
             await this.play()
-        } else if (action == 'exit') {
+        } else if (action === 'change game') {
+            await this.select()
+            await this.play()
+        } else if (action === 'exit') {
             this.end()
         } else {
             // nextActionの追加設定に対する実装漏れをふせぐために用意
