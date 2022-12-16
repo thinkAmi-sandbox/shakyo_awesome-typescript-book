@@ -7,7 +7,7 @@ class HitAndBlow {
     private mode: Mode = 'normal'
 
     async setting() {
-        this.mode = await promptSelect('モードを入力してください', ['normal', 'hard']) as Mode
+        this.mode = await promptSelect<Mode>('モードを入力してください', ['normal', 'hard'])
 
         const answerLength = this.getAnswerLength()
 
@@ -110,7 +110,8 @@ const promptInput = async(text: string)  => {
     return readLine()
 }
 
-const promptSelect = async (text: string, values: readonly string[]): Promise<string> => {
+// TS4.9のせいか、 extends string としなくてもエラーにならない
+const promptSelect = async <T extends string>(text: string, values: readonly T[]): Promise<T> => {
     printLine(`\n${text}`)
 
     values.forEach((value) => {
@@ -119,11 +120,13 @@ const promptSelect = async (text: string, values: readonly string[]): Promise<st
 
     printLine(`>`, false)
 
-    const input = await readLine()
+    // includesによる値の走査を行い、かつTSが走査の実装に必要な型の解釈の機能を持っていないため、asでのアサーションとする
+    const input = (await readLine()) as T
+
     if (values.includes(input)) {
         return input 
     } else {
-        return promptSelect(text, values)
+        return promptSelect<T>(text, values)
     }
 }
 
