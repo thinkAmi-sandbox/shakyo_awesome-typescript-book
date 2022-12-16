@@ -12,8 +12,7 @@ const gameTitles = ['hit and blow', 'nothing'] as const
 type GameTitle = typeof gameTitles[number]
 
 type GameStore = {
-    'hit and blow': HitAndBlow
-    'nothing': Nothing
+    [key: string]: HitAndBlow | Nothing
 }
 
 class HitAndBlow {
