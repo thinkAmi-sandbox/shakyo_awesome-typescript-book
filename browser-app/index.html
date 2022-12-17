@@ -69,6 +69,15 @@
   </div>
 </div>
 
+<script>
+  /**
+   * this is a hack for dragula
+   * error: global is not defined
+   * => refs: https://github.com/bevacqua/dragula/issues/602#issuecomment-1109840139
+   */
+  var global = global || window
+</script>
+
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
