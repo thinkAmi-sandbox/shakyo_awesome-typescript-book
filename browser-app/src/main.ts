@@ -66,7 +66,17 @@ class Application {
     task.update({ status: newStatus })
     this.taskCollection.update(task)
 
-    console.log(sibling)
+    if (sibling) {
+      const nextTaskId = this.taskRenderer.getId(sibling)
+      if (!nextTaskId) return
+
+      const nextTask = this.taskCollection.find(nextTaskId)
+      if (!nextTask) return
+
+      this.taskCollection.moveAboveTarget(task, nextTask)
+    } else {
+      this.taskCollection.moveToLast(task)
+    }
   }
 
   private handleClickDeleteAllDoneTasks = () => {
