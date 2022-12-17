@@ -1,5 +1,5 @@
 import { EventListener } from "./ts/EventListener"
-import { Status, Task } from "./ts/Task"
+import { Status, statusMap, Task } from "./ts/Task"
 import { TaskCollection } from "./ts/TaskCollection"
 import { TaskRenderer } from "./ts/TaskRenderer"
 
@@ -14,8 +14,10 @@ class Application {
 
   start() {
     const createForm = document.getElementById('createForm') as HTMLElement
+    const deleteAllDoneTaskButton = document.getElementById('deleteAllDoneTask') as HTMLElement
 
     this.eventListener.add('submit-handler', 'submit', createForm, this.handleSubmit)
+    this.eventListener.add('click-handler', 'click', deleteAllDoneTaskButton, this.handleClickDeleteAllDoneTasks)
 
     this.taskRenderer.subscribeDragAndGrop(this.handleDragAndDrop)
   }
@@ -46,11 +48,7 @@ class Application {
   private handleClickDeleteTask = (task: Task) => {
     if (!window.confirm(`「${task.title}」を削除してもよろしいですか？`)) return
 
-    this.eventListener.remove(task.id)
-
-    this.taskCollection.delete(task)
-
-    this.taskRenderer.remove(task)
+    this.executeDeleteTask(task)
   }
 
   private handleDragAndDrop = (el: Element, sibling: Element | null, newStatus: Status) => {
@@ -64,6 +62,22 @@ class Application {
     this.taskCollection.update(task)
 
     console.log(sibling)
+  }
+
+  private handleClickDeleteAllDoneTasks = () => {
+    if (!window.confirm('DONEのタスクを一括削除してよろしいですか？')) return
+
+    const doneTasks = this.taskCollection.filter(statusMap.done)
+
+    doneTasks.forEach((task) => this.executeDeleteTask(task))
+  }
+
+  private executeDeleteTask = (task: Task) => {
+    this.eventListener.remove(task.id)
+
+    this.taskCollection.delete(task)
+
+    this.taskRenderer.remove(task)
   }
 }
 
