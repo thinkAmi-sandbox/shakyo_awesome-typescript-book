@@ -1,6 +1,7 @@
 import { Button } from './libs/Button'
 import { Heading } from './libs/Heading'
 import { Text } from './libs/Text'
+import { Textarea } from './libs/TextArea'
 
 function App() {
   return (
@@ -16,6 +17,9 @@ function App() {
       <Button onClick={() => console.log('clicked!')} title="プライマリ" type="primary" width={96} />
       <Button onClick={() => console.log('clicked!')} title="セカンダリ" type="secondary" />
       <Button onClick={() => console.log('clicked!')} title="エラー" type="error" />
+
+      <hr />
+      <Textarea width={500} maxLength={5} />
     </>
   )
 }
