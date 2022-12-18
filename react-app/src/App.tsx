@@ -1,5 +1,6 @@
 import { Button } from './libs/Button'
 import { Heading } from './libs/Heading'
+import { Input } from './libs/Input'
 import { Text } from './libs/Text'
 import { Textarea } from './libs/TextArea'
 
@@ -20,6 +21,9 @@ function App() {
 
       <hr />
       <Textarea width={500} maxLength={5} />
+
+      <hr />
+      <Input type="text" />
     </>
   )
 }
