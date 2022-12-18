@@ -1,6 +1,7 @@
 import { Button } from './libs/Button'
 import { Heading } from './libs/Heading'
 import { Input } from './libs/Input'
+import { PasswordForm } from './libs/PasswordForm'
 import { Text } from './libs/Text'
 import { Textarea } from './libs/TextArea'
 
@@ -24,6 +25,9 @@ function App() {
 
       <hr />
       <Input type="text" />
+
+      <hr />
+      <PasswordForm onSubmit={(password) => console.log(password)} />
     </>
   )
 }
